@@ -1,0 +1,537 @@
+---
+title: "Group assessment draft"
+author: "TEAM MORSE"
+date: "19/08/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Hi Loc, Darren, and Chloe:
+I've looked into the variables closer and tried a few combinations based on what we'd usually look at clinically. I'm happy to answer any clinical concerns (as I'm an icu clinician...), but definitely need everybody's help with the stats/analysis part (...with no maths background)! You may have other ways of looking at the data, so please share. We don't want our patients dying so let's see how we can predict that! :D This is but a start--please feel free to give feedback and continue on!
+
+Cheers,
+Dane
+
+```{r}
+
+#load libraries
+library(dplyr)
+library(ggplot2)
+
+#load ICU data frame
+icu_patients_df1 <- readRDS("icu_patients_df1.rds")
+
+#check structure of data frame
+str(icu_patients_df1)
+head(icu_patients_df1)
+summary(icu_patients_df1)
+
+
+
+```
+
+total of 2061 observations, 120 variables
+mostly numeric, some factors (ICUType, Gender), one logical (status)
+lots of variables with NAs
+  diasABP, height, weight, 
+  survival (since other patients did not die; confirmed by "0" in_hospital_death )
+
+```{r}
+
+
+# variable names/headings for easy reference
+df_variables <- colnames(icu_patients_df1)
+df_variables
+
+# univariate exploration for specific variables that may be of importance
+
+glm_ICUtype <- glm(in_hospital_death ~ ICUType, data = icu_patients_df1)
+summary(glm_ICUtype)
+# ICUtype is a significant variable
+
+glm_Age <- glm(in_hospital_death ~ Age, data = icu_patients_df1)
+summary(glm_Age)
+# Age is a significant variable
+
+glm_Gender <- glm(in_hospital_death ~ Gender, data = icu_patients_df1)
+summary(glm_Gender)
+# Gender is not a significant variable
+
+glm_Height <- glm(in_hospital_death ~ Height, data = icu_patients_df1)
+summary(glm_Height)
+# Height is not a significant variable
+
+glm_BUN_max <- glm(in_hospital_death ~ BUN_max, data = icu_patients_df1)
+summary(glm_BUN_max)
+# BUN_max is a significant variable
+
+glm_SAPS1 <- glm(in_hospital_death ~ SAPS1, data = icu_patients_df1)
+summary(glm_SAPS1)
+# SAPS1 is a significant variable
+
+glm_Creatinine_max <- glm(in_hospital_death ~ Creatinine_max, data = icu_patients_df1)
+summary(glm_Creatinine_max)
+# Creatinine_max is a significant variable
+
+glm_DiasABP_diff <- glm(in_hospital_death ~ DiasABP_diff, data = icu_patients_df1)
+summary(glm_DiasABP_diff)
+# DiasABP_diff is not a significant variable
+
+glm_FiO2_max <- glm(in_hospital_death ~ FiO2_max, data = icu_patients_df1)
+summary(glm_FiO2_max)
+# FiO2_max is not a significant variable
+
+glm_GCS_min <- glm(in_hospital_death ~ GCS_min, data = icu_patients_df1)
+summary(glm_GCS_min)
+# GCS_min is a significant variable
+
+glm_HCO3_diff <- glm(in_hospital_death ~ HCO3_diff, data = icu_patients_df1)
+summary(glm_HCO3_diff)
+# HCO3_diff is a significant variable
+
+glm_HCT_min <- glm(in_hospital_death ~ HCT_min, data = icu_patients_df1)
+summary(glm_HCT_min)
+# HCT_min is not a significant variable
+
+glm_HR_diff <- glm(in_hospital_death ~ HR_diff, data = icu_patients_df1)
+summary(glm_HR_diff)
+# HR_diff is a significant variable
+
+glm_K_diff <- glm(in_hospital_death ~ K_diff, data = icu_patients_df1)
+summary(glm_K_diff)
+# K_diff is a significant variable
+
+glm_Lactate_max <- glm(in_hospital_death ~ Lactate_max, data = icu_patients_df1)
+summary(glm_Lactate_max)
+# Lactate_max is a significant variable
+
+glm_MAP_diff <- glm(in_hospital_death ~ MAP_diff, data = icu_patients_df1)
+summary(glm_MAP_diff)
+# MAP_diff is not a significant variable
+
+glm_Mg_diff <- glm(in_hospital_death ~ Mg_diff, data = icu_patients_df1)
+summary(glm_Mg_diff)
+# Mg_diff is not a significant variable
+
+glm_Na_diff <- glm(in_hospital_death ~ Na_diff, data = icu_patients_df1)
+summary(glm_Na_diff)
+# Na_diff is a significant variable
+
+glm_NIDiasABP_diff <- glm(in_hospital_death ~ NIDiasABP_diff, data = icu_patients_df1)
+summary(glm_NIDiasABP_diff)
+# NIDiasABP_diff is not a significant variable
+
+glm_NIMAP_diff <- glm(in_hospital_death ~ NIMAP_diff, data = icu_patients_df1)
+summary(glm_NIMAP_diff)
+# NIMAP_diff is not a significant variable
+
+glm_NISysABP_diff <- glm(in_hospital_death ~ NISysABP_diff, data = icu_patients_df1)
+summary(glm_NISysABP_diff)
+# NISysABP_diff is a significant variable
+
+glm_PaCO2_diff <- glm(in_hospital_death ~ PaCO2_diff, data = icu_patients_df1)
+summary(glm_PaCO2_diff)
+# PaCO2_diff is a significant variable
+
+glm_PaCO2_max <- glm(in_hospital_death ~ PaCO2_max, data = icu_patients_df1)
+summary(glm_PaCO2_max)
+# PaCO2_max is not a significant variable
+
+glm_PaO2_max <- glm(in_hospital_death ~ PaO2_max, data = icu_patients_df1)
+summary(glm_PaO2_max)
+# PaO2_max is a significant variable
+
+glm_Platelets_min <- glm(in_hospital_death ~ Platelets_min, data = icu_patients_df1)
+summary(glm_Platelets_min)
+# Platelets_min is not a significant variable
+
+glm_RespRate_diff <- glm(in_hospital_death ~ RespRate_diff, data = icu_patients_df1)
+summary(glm_RespRate_diff)
+# RespRate_diff is a significant variable
+
+glm_SaO2_diff <- glm(in_hospital_death ~ SaO2_diff, data = icu_patients_df1)
+summary(glm_SaO2_diff)
+# SaO2_diff is not a significant variable
+
+glm_SysABP_diff <- glm(in_hospital_death ~ SysABP_diff, data = icu_patients_df1)
+summary(glm_SysABP_diff)
+# SysABP_diff is a significant variable
+
+glm_Temp_diff <- glm(in_hospital_death ~ Temp_diff, data = icu_patients_df1)
+summary(glm_Temp_diff)
+# Temp_diff is a significant variable
+
+glm_TroponinI_max <- glm(in_hospital_death ~ TroponinI_max, data = icu_patients_df1)
+summary(glm_TroponinI_max)
+# TroponinI_max is not a significant variable
+
+glm_TroponinT_max <- glm(in_hospital_death ~ TroponinT_max, data = icu_patients_df1)
+summary(glm_TroponinT_max)
+# TroponinT_max is a significant variable
+
+glm_Urine_diff <- glm(in_hospital_death ~ Urine_diff, data = icu_patients_df1)
+summary(glm_Urine_diff)
+# Urine_diff is a significant variable
+
+glm_WBC_diff <- glm(in_hospital_death ~ WBC_diff, data = icu_patients_df1)
+summary(glm_WBC_diff)
+# WBC_diff is a significant variable
+
+glm_Weight_max <- glm(in_hospital_death ~ Weight_max, data = icu_patients_df1)
+summary(glm_Weight_max)
+# Weight_max is a significant variable
+
+
+# EXPLORING VARIABLES FOR GLM MODEL
+
+# trial 1: after checking the data, variables of interest are chosen for initial analysis
+icu_glm_initial_1 <- glm(in_hospital_death ~ 
+                     # patient descriptor variables
+                     ICUType +
+                     Age +
+                     Gender +
+                     Height +
+                     BUN_max +
+                     # clinical variables
+                     SAPS1 + 
+                     Creatinine_max +
+                     DiasABP_diff +
+                     FiO2_max + 
+                     GCS_min +
+                     HCO3_diff +
+                     HCT_min + 
+                     HR_diff + 
+                     K_diff + 
+                     Lactate_max +
+                     MAP_diff + 
+                     Mg_diff + 
+                     Na_diff +
+                     NIDiasABP_diff + 
+                     NIMAP_diff +
+                     NISysABP_diff +
+                     PaCO2_diff +
+                     PaCO2_max + 
+                     PaO2_max +
+                     Platelets_min +
+                     RespRate_diff + 
+                     SaO2_diff + 
+                     SysABP_diff +
+                     Temp_diff +
+                     TroponinI_max +
+                     TroponinT_max +
+                     Urine_diff +
+                     WBC_diff +
+                     Weight_max, data = icu_patients_df1, family = binomial)
+summary(icu_glm_initial_1)
+
+'
+From this (icu_glm_initial_1), the significant variables were:
+BUN_max                              ***
+SAPS1                                *  
+HCT_min                              ** 
+Lactate_max                          .  
+PaO2_max                             .  
+
+BUN_max and HCT_min appear come out significant for this initial model. 
+SAPS1 is also significant, would like to also compare with SOFA in next model. 
+Id explore other variables for the clinical markers lactate, MAP, NISysABP, and PaO2_max
+to test for stronger significance (i.e. min, max, or diff)
+'
+
+```
+
+
+
+```{r}
+
+
+# trial 2: exploring other variables
+# trying other markers for lactate, MAP, NISysABP, and PaO2_max
+icu_glm_initial_2 <- glm(in_hospital_death ~ 
+                           # patient descriptor variables
+                           ICUType +
+                           Age +
+                           Gender +
+                           Height +
+                           BUN_max +
+                           # clinical variables
+                           SAPS1 + 
+                           Creatinine_max +
+                           DiasABP_diff +
+                           FiO2_max + 
+                           GCS_min +
+                           HCO3_diff +
+                           HCT_min + 
+                           HR_diff + 
+                           K_diff + 
+                           Lactate_max +
+                           MAP_diff + 
+                           Mg_diff + 
+                           Na_diff +
+                           NIDiasABP_diff + 
+                           NIMAP_diff +
+                           NISysABP_diff +
+                           PaCO2_diff +
+                           PaCO2_max + 
+                           PaO2_max +
+                           Platelets_min +
+                           RespRate_diff + 
+                           SaO2_diff + 
+                           SysABP_diff +
+                           Temp_diff +
+                           TroponinI_max +
+                           TroponinT_max +
+                           Urine_diff +
+                           WBC_diff +
+                           Weight_max +
+                           #EXPLORING OTHER VARIABLES
+                           SOFA +
+                           Lactate_diff + # I didn't include Lactate_min as low lactate levels are ideal/expected for a healthy person
+                           MAP_max +
+                           NISysABP_max +
+                           NISysABP_min +
+                           PaO2_diff +
+                           PaO2_min,
+                           data = icu_patients_df1, family = binomial)
+summary(icu_glm_initial_2)
+'
+In this second model, the following are significant:
+BUN_max                               0.0377269  0.0102347   3.686 0.000228 ***
+SAPS1                                 0.1598306  0.0685511   2.332 0.019724 *  
+Creatinine_max                       -0.2921214  0.1466432  -1.992 0.046365 *  
+HCT_min                               0.1321537  0.0381673   3.462 0.000535 ***
+MAP_diff                              0.0511316  0.0173223   2.952 0.003160 ** 
+PaO2_max                             -0.0075585  0.0038625  -1.957 0.050362 .  
+Urine_diff                           -0.0007600  0.0004575  -1.661 0.096640 .  
+MAP_max                              -0.0440888  0.0162755  -2.709 0.006751 ** 
+NISysABP_min                          0.0164209  0.0084823   1.936 0.052880 .  
+PaO2_min                              0.0101487  0.0051102   1.986 0.047034 *  
+
+AIC: 387.02 
+
+Will look in other variables for PaO2, Urine, and blood pressure (systolic/diastolic/mean)
+
+'
+
+
+```
+
+
+
+```{r}
+
+# trial 3: trying other combinations
+
+icu_glm_initial_3 <- glm(in_hospital_death ~ 
+                           # patient descriptor variables
+                           ICUType +
+                           Age +
+                           Gender +
+                           Height +
+                           BUN_max +
+                           # clinical variables
+                           SAPS1 + 
+                           Creatinine_max +
+                           DiasABP_diff + 
+                           FiO2_max + 
+                           GCS_min +
+                           HCO3_diff +
+                           HCT_min + 
+                           HR_diff + 
+                           K_diff + 
+                           Lactate_max +
+                           MAP_diff + 
+                           Mg_diff + 
+                           Na_diff +
+                           NIDiasABP_diff + 
+                           NIMAP_diff +
+                           NISysABP_diff +
+                           PaCO2_diff +
+                           PaCO2_max + 
+                           PaO2_max +
+                           Platelets_min +
+                           RespRate_diff + 
+                           SaO2_diff + 
+                           SysABP_diff +
+                           Temp_diff +
+                           TroponinI_max +
+                           TroponinT_max +
+                           Urine_diff +
+                           WBC_diff +
+                           Weight_max +
+                           #EXPLORING OTHER VARIABLES
+                           SOFA +
+                           Lactate_diff + # I didn't include Lactate_min as low lactate levels are ideal/expected for a healthy person
+                           MAP_max +
+                           NISysABP_max +
+                           NISysABP_min +
+                           PaO2_diff +
+                           PaO2_min +
+                           #ADD ONS TO MODEL 3
+                           PaO2_diff +
+                           SysABP_min + #blood pressure variables
+                           SysABP_max +
+                           DiasABP_min +
+                           DiasABP_max +
+                           NIDiasABP_min +
+                           NIDiasABP_max +
+                           MAP_min +
+                           Urine_min +
+                           Urine_max,
+                         data = icu_patients_df1, family = binomial)
+summary(icu_glm_initial_3)
+
+'
+On third iteration, I can see some variables are strongly significant across trial models,
+Though with varying degrees of significance, 
+other variables of interest consistently come out in the models
+
+BUN_max                               3.701e-02  1.142e-02   3.241 0.001192 ** 
+SAPS1                                 1.270e-01  7.460e-02   1.702 0.088720 .  
+Creatinine_max                       -5.115e-01  1.861e-01  -2.748 0.005988 ** 
+HCT_min                               1.386e-01  4.042e-02   3.428 0.000608 ***
+MAP_diff                              1.010e-01  3.232e-02   3.125 0.001777 ** 
+PaO2_max                             -7.916e-03  4.186e-03  -1.891 0.058615 .  
+Urine_diff                            1.511e-02  4.524e-03   3.340 0.000837 ***
+MAP_max                              -9.012e-02  3.081e-02  -2.925 0.003447 ** 
+NISysABP_min                          2.651e-02  1.287e-02   2.060 0.039400 *  
+PaO2_min                              1.157e-02  5.345e-03   2.165 0.030403 *  
+DiasABP_min                          -5.038e-02  3.004e-02  -1.677 0.093538 .  
+MAP_min                               4.820e-02  2.712e-02   1.777 0.075488 .  
+Urine_max                            -1.546e-02  4.410e-03  -3.505 0.000456 ***
+
+AIC: 384.28
+
+Patient descriptors didnt seem to have any significance so far, will cross out for next iteration.
+If we group the clinical variables, we have markers for the following so far:
+    blood pressure (MAP, SysABP)
+    kidney function (BUN, urine, creatinine)
+    blood O2 levels (PaO2)
+    assessment tool/score (SAPS1)
+
+
+Ive reviewed the data and would like to check a few more clinical variables which may be of interest/significance:
+    glucose
+    albumin
+    cholesterol
+    liver profile markers (AST, ALT, ALP)
+    electrolytes (Na, Mg, K)
+
+
+'
+
+```
+
+```{r}
+
+
+# trial 4
+icu_glm_initial_4 <- glm(in_hospital_death ~ 
+                           # CLINICAL VARIABLES GROUPED FROM FIRST 3 TRIAL MODELS
+                           # rapid assessment tool
+                           SAPS1 +
+                           # kidney markers
+                           BUN_max +
+                           Creatinine_max +
+                           Urine_diff +
+                           Urine_max +
+                           # blood pressure variables
+                           MAP_diff +
+                           MAP_max +
+                           MAP_min +
+                           NISysABP_min +
+                           DiasABP_min +
+                           # blood levels
+                           PaO2_max +
+                           PaO2_min +
+                           HCT_min +
+                           # EXPLORING OTHER VARIABLES OF INTEREST
+                           Glucose_diff +
+                           Albumin_diff +
+                           ALP_max +
+                           ALT_max +
+                           AST_max +
+                           K_min +
+                           Na_diff +
+                           Mg_min +
+                           Cholesterol_max,
+                         data = icu_patients_df1, family = binomial)
+summary(icu_glm_initial_4)
+
+
+'
+From trial model 4, none of the added variables of interest were significant. 
+
+SAPS1            0.1302302  0.0268884   4.843 1.28e-06 ***
+BUN_max          0.0275854  0.0061310   4.499 6.82e-06 ***
+Creatinine_max  -0.3569116  0.1083592  -3.294 0.000988 ***
+Urine_diff       0.0079677  0.0026051   3.059 0.002224 ** 
+Urine_max       -0.0086481  0.0024959  -3.465 0.000530 ***
+MAP_diff         0.0279541  0.0112775   2.479 0.013185 *  
+MAP_max         -0.0251078  0.0106622  -2.355 0.018530 *  
+MAP_min          0.0189800  0.0099203   1.913 0.055718 .  
+DiasABP_min     -0.0250375  0.0125252  -1.999 0.045612 *  
+PaO2_max        -0.0019022  0.0010563  -1.801 0.071739 .  
+PaO2_min         0.0051129  0.0021546   2.373 0.017645 *  
+HCT_min          0.0444069  0.0202447   2.194 0.028271 *  
+
+AIC: 705.14
+
+Ill try running these for trial model5
+'
+```
+
+
+
+```{r}
+
+# trial 5: preliminary model from the first 4 iterations
+# variables trimeed down, chosen based on clinical background and statistical signifance
+icu_glm_initial_5 <- glm(in_hospital_death ~ 
+                           # CLINICAL VARIABLES GROUPED FROM FIRST 3 TRIAL MODELS
+                           # rapid assessment tool
+                           SAPS1 +
+                           # kidney markers
+                           BUN_max +
+                           Creatinine_max +
+                           Urine_diff +
+                           Urine_max +
+                           # blood pressure variables
+                           MAP_diff +
+                           MAP_max +
+                           MAP_min +
+                           NISysABP_min +
+                           DiasABP_min +
+                           # blood levels
+                           PaO2_max +
+                           PaO2_min +
+                           HCT_min,
+                         data = icu_patients_df1, family = binomial)
+summary(icu_glm_initial_5)
+```
+Im not quite sure why, but the AIC has inflated to 700s in the latter models despite removing insignificant variables. 
+Happy to start with these 13 variables for analysis.
+I have grouped them (see code comments) to help with our decision making later in eliminating variables of the same category/context.
+
+
+```{r}
+# START OF GLM MODELLING
+# "icu_glm_initial_5"
+# this now contains the initial 13 variables for analysis and the starting point of modelling
+
+```
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+
+```{r}
+```
