@@ -6,8 +6,7 @@ GLM MODEL
 '''
 
 
-
-
+# load data
 icu_patients_df1 <- readRDS("~/Documents/HDAT 9600/FINAL hdat9600_final_assignment/icu_patients_df1.rds")
 
 
