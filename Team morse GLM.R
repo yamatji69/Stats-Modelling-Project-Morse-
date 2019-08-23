@@ -1,7 +1,7 @@
 '''
 HDAT 9600 GROUP ASSESSMENT
 TEAM MORSE
-GLM
+GLM MODEL
 
 '''
 
@@ -699,7 +699,7 @@ BUN_max + Creatinine_max + Urine_diff + Urine_max + HCT_min
 
 # =======================================================================================
 
-# COMPARING MODELS
+# MODEL COMPARISON: PSEUDO R2
 # Pseudo R2 comparisons of working model(icu_glm_initial_5_naomit) and proposed ICU model (icu_glm_reduced_8_var)
 library(DescTools)
 options(scipen=999)
@@ -717,7 +717,7 @@ has lower values compared with the other previous models.
 
 '''
 # =======================================================================================
-# DIAGNOSTIC CHECK: AUC
+# FURTHER MODEL COMPARISON: AUC
 # create dataframe with predicted probabilities
 icudf1_na_omit2 <- icudf1_na_omit
 library(pROC)
