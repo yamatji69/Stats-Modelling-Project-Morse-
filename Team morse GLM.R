@@ -1,3 +1,13 @@
+'''
+HDAT 9600 GROUP ASSESSMENT
+TEAM MORSE
+GLM
+
+'''
+
+
+
+
 icu_patients_df1 <- readRDS("~/Documents/HDAT 9600/FINAL hdat9600_final_assignment/icu_patients_df1.rds")
 
 
@@ -686,3 +696,58 @@ Looking at significnat variables here and will try in another model (revised_icu
 BUN_max + Creatinine_max + Urine_diff + Urine_max + HCT_min
 
 '''
+
+# =======================================================================================
+
+# COMPARING MODELS
+# Pseudo R2 comparisons of working model(icu_glm_initial_5_naomit) and proposed ICU model (icu_glm_reduced_8_var)
+library(DescTools)
+options(scipen=999)
+# Proposed ICU Model
+r2_1 <- PseudoR2(icu_glm_reduced_8_var, which="all")
+# some of models attempted 
+PseudoR2(icu_glm_initial_5_naomit, which="all")
+PseudoR2(icu_glm_initial_5, which="all")
+PseudoR2(revised_icu_glm_2_na, which = "all")
+
+'''
+From using PseudoR2 statistics, we can see and confirm that the proposed ICU model 
+has lower values compared with the other previous models.  
+
+
+'''
+# =======================================================================================
+# DIAGNOSTIC CHECK: AUC
+# create dataframe with predicted probabilities
+icudf1_na_omit2 <- icudf1_na_omit
+library(pROC)
+# AUC for Proposed ICU Model (icu_glm_reduced_8_var)
+icudf1_na_omit2$predprob_proposed_model=predict(icu_glm_reduced_8_var, type="response")
+auc(icudf1_na_omit2$in_hospital_death, icudf1_na_omit2$predprob_proposed_model)
+# AUC for other Model (icu_glm_initial_5_naomit)
+icudf1_na_omit2$predprob_other_model=predict(icu_glm_initial_5_naomit, type="response")
+auc(icudf1_na_omit2$in_hospital_death, icudf1_na_omit2$predprob_other_model)
+
+
+'''
+For the proposed ICU model (icu_glm_reduced_8_var):
+the Area under the curve: 0.7712. 
+
+For the other model (icu_glm_initial_5_naomit):
+Area under the curve: 0.81
+
+The proposed ICU model (icu_glm_reduced_8_var) has a slightly lower AUC of 0.7712 compared with the other model (icu_glm_initial_5_naomit) which has 0.81.
+This is not a surprise, as the latter has far more variables included in the model (13). 
+It is reasonable to reduce the model and exclude the 5 variables (MAP_min, NiSysABP_min, DiasABP_min, PaO2_max, PaO2_min), 
+as these refer to two main clinical indicators: Blood Pressure and Blood Oxygen Levels. 
+The reduced model has enough blood pressure variables (MAP_diff, MAP_max). 
+While blood O2 levels are important, this is largely variable and fluctuating in the intensive care setting, 
+and largely affected by other factors (level of Oxygen support, respiratory rate) which have not been accounted for in the model. 
+Excluding these variables early on effectively narrows down the clinical indicators of interest, while providing enough information for analysis of data in an intensive care context.  
+
+'''
+
+
+
+
+
