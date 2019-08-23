@@ -12,7 +12,7 @@ icu_patients_df1 <- readRDS("~/Documents/HDAT 9600/FINAL hdat9600_final_assignme
 
 
 # ================================================================================================
-#CHECKING STRUCTURE OF DATA FRAME
+#EXPLORING DATA; CHECKING STRUCTURE OF DATA FRAME
 str(icu_patients_df1)
 head(icu_patients_df1)
 summary(icu_patients_df1)
@@ -30,6 +30,28 @@ survival (since other patients did not die; confirmed by "0" in_hospital_death )
 # variable names/headings for easy reference
 df_variables <- colnames(icu_patients_df1)
 df_variables
+
+# some variable checks
+hist(icu_patients_df1$BUN_max)
+hist(icu_patients_df1$SAPS1)
+hist(icu_patients_df1$Creatinine_max)
+hist(icu_patients_df1$Urine_diff)
+hist(icu_patients_df1$Urine_max)
+hist(icu_patients_df1$MAP_max)
+hist(icu_patients_df1$MAP_diff)
+hist(icu_patients_df1$HCT_min)
+hist(icu_patients_df1$MAP_min)
+hist(icu_patients_df1$NISysABP_min)
+hist(icu_patients_df1$DiasABP_min)
+hist(icu_patients_df1$PaO2_max)
+hist(icu_patients_df1$PaO2_min)
+
+plot(icu_patients_df1$PaO2_min)
+plot(icu_patients_df1$Urine_diff)
+plot(icu_patients_df1$BUN_max)
+plot(icu_patients_df1$Creatinine_max)
+plot(icu_patients_df1$SAPS1)
+
 
 # ================================================================================================
 # UNIVARIATE ANALYSIS
